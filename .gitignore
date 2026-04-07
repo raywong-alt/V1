@@ -1,0 +1,22 @@
+# 相依套件
+node_modules/
+
+# 建置輸出
+dist/
+
+# 環境變數（包含敏感設定，不可提交）
+.env
+.env.local
+.env.*.local
+*.local
+
+# 生成的音訊資產（體積大，由 CI 或本地腳本重新生成）
+# 如需提交音檔，請移除以下兩行
+public/audio/
+
+# 系統雜項
+.DS_Store
+Thumbs.db
+
+# 編輯器
+.vscode/*.log

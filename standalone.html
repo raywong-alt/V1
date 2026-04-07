@@ -1,0 +1,232 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>幼兒英語評估工具</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary:#fff8f0;--bg-card:#fff;--text-primary:#2d3436;--text-secondary:#636e72;
+      --coral:#ff6b6b;--pink:#fd79a8;--sky:#74b9ff;--sun:#fdcb6e;--ocean:#00b894;
+      --shadow:0 4px 20px rgba(0,0,0,.08);--shadow-lg:0 8px 32px rgba(0,0,0,.12);--radius:20px;--radius-sm:12px;
+      font-family:'Quicksand','Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;
+    }
+    *{box-sizing:border-box} body{margin:0;background:var(--bg-primary);color:var(--text-primary)}
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 10% 20%,rgba(255,107,107,.08),transparent 50%),radial-gradient(circle at 80% 80%,rgba(116,185,255,.08),transparent 50%)}
+    #app{max-width:1280px;margin:0 auto;padding:16px;position:relative;z-index:1}
+    .top{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 20px;margin-bottom:14px}
+    .top h1{margin:0;font-family:'Fredoka',sans-serif;font-size:30px;background:linear-gradient(135deg,var(--coral),#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .top p{margin:4px 0 0;color:var(--text-secondary);font-weight:600}
+    .tag{border-radius:999px;background:linear-gradient(135deg,rgba(116,185,255,.2),rgba(162,155,254,.2));color:#4a4aa2;padding:8px 14px;font-weight:700}
+    .panel{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:18px;display:grid;gap:14px}
+    .hero{text-align:center}.mascot{font-size:68px}
+    h2,h3{margin:0;font-family:'Fredoka',sans-serif}
+    .muted{color:var(--text-secondary);font-weight:600}
+    .field{display:grid;gap:8px}.field label{font-weight:700;color:var(--text-secondary)}
+    input{border:3px solid #ffe4a7;border-radius:var(--radius-sm);padding:12px;font-size:18px;outline:none}
+    input:focus{border-color:var(--sun);box-shadow:0 0 0 4px rgba(253,203,110,.2)}
+    .grid{display:grid;gap:10px}.chips{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}.cats{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}.opts{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    .single{grid-template-columns:1fr}.two{grid-template-columns:repeat(2,minmax(220px,1fr))}
+    button{border-radius:var(--radius-sm);border:3px solid #edf0f2;background:#fff;color:var(--text-primary);min-height:56px;font-size:17px;font-weight:700;cursor:pointer;padding:10px 12px;transition:.2s}
+    button:hover{transform:translateY(-2px)} .active{border-color:var(--sky);background:linear-gradient(135deg,rgba(116,185,255,.18),rgba(162,155,254,.18))}
+    .primary{border:none;color:#fff;background:linear-gradient(135deg,var(--coral),var(--pink));box-shadow:0 6px 24px rgba(255,107,107,.35)}
+    .primary:disabled,.ghost:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .cat-card{border-radius:var(--radius);border:3px solid transparent;box-shadow:var(--shadow);display:grid;gap:4px;padding:16px 10px;text-align:center}
+    .cat-card .icon{font-size:34px}.cat-card small{color:var(--text-secondary);font-weight:600}
+    .cat-card.active{border-color:var(--sky);background:linear-gradient(135deg,rgba(116,185,255,.15),rgba(162,155,254,.15))}
+    .row{display:flex;gap:10px;justify-content:space-between}.row>button,.row>div{flex:1}
+    .block{border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);padding:14px}
+    .big{font-family:'Fredoka',sans-serif;font-size:52px;color:var(--ocean);margin:0}
+    .scoregrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+    .scoreitem{border:2px solid #eef3f8;border-radius:12px;padding:10px;display:grid;gap:4px}
+    .wrong{border-left:4px solid var(--coral);border-radius:12px;padding:10px;background:#fff}
+    .quiz{display:grid;gap:14px;grid-template-columns:1.05fr 1.4fr}
+    .qtag{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(162,155,254,.2);color:#4a4aa2;font-size:13px;font-weight:700}
+    .placeholder{border:2px dashed #d8e3f5;border-radius:12px;padding:10px;display:grid;gap:8px}
+    .imgph{min-height:100px;display:flex;align-items:center;justify-content:center;background:#f6fbff;border-radius:10px;color:#6e88a8;font-weight:700}
+    .audio{border-color:#b8d7ff;background:linear-gradient(135deg,rgba(116,185,255,.14),rgba(162,155,254,.14));color:#3e5a9a}
+    .save-ready{border:2px dashed #b9d8ff}.parent{border:2px dashed #ffd1b8}
+    @media (max-width:1024px){.quiz{grid-template-columns:1fr}}
+    @media (max-width:900px){.top{flex-direction:column;align-items:flex-start;gap:8px}.row,.two{display:grid;grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const AGE_GROUPS=['1-2','3-4','4-5','5-6','6+'];
+const TARGET_AREAS=['開學','學習記憶','專注力'];
+const CATEGORIES=['letters','phonics','blend','picture','dictation'];
+const CATEGORY_LABELS={letters:'字母辨識',phonics:'發音規則',blend:'拼讀組合',picture:'圖像詞彙',dictation:'聽寫拼字'};
+const CATEGORY_UI={letters:{icon:'🔤',title:'字母認識',desc:'聽音辨認字母'},phonics:{icon:'🗣️',title:'字母發音',desc:'字母與發音配對'},blend:{icon:'🧩',title:'拼音組合',desc:'聽音拼讀單詞'},picture:{icon:'🖼️',title:'看圖識字',desc:'看圖配對詞彙'},dictation:{icon:'✏️',title:'聽寫辨字',desc:'聽音找正確拼法'}};
+const LEVEL_LABELS={'Level 1':'Level 1：需加強基礎','Level 2':'Level 2：基礎建立中','Level 3':'Level 3：符合同齡水平','Level 4':'Level 4：高於同齡水平'};
+const API_URL=(window.__APP_CONFIG__&&window.__APP_CONFIG__.apiUrl)||'';
+const API_KEY=(window.__APP_CONFIG__&&window.__APP_CONFIG__.apiKey)||'';
+const QUESTIONNAIRE=[
+{id:'weekly_exposure',text:'小朋友每星期接觸英文的時間大約有多少？',options:['少於 1 小時','1-3 小時','3-5 小時','5 小時以上']},
+{id:'learning_place',text:'小朋友主要在哪裡學英文？',options:['幼稚園 / 學校','家裡（家長教 / 自學）','補習班 / 興趣班','英文影片 / Apps']},
+{id:'abc_song',text:'小朋友會不會唱英文 ABC 歌？',options:['完全不會','會一些','可以完整唱完','還會其他英文歌']},
+{id:'self_reading',text:'小朋友平時會不會嘗試自己讀英文字？',options:['不會','偶爾會嘗試','經常嘗試','已經可以讀簡單句子']},
+{id:'learning_attitude',text:'小朋友對學英文的態度如何？',options:['抗拒 / 不喜歡','沒什麼興趣','一般 / 還好','很喜歡學']}
+];
+
+function mk(ageGroup,category,n,questionType,questionText,options,correctIndex,audioLabel,imageLabel){return{id:`${ageGroup}-${category}-${n}`,ageGroup,category,type:'mcq',questionType,questionText,options,correctIndex,audioLabel:audioLabel||`[${ageGroup}] ${category} audio ${n}`,imageLabel:imageLabel||`[${ageGroup}] ${category} image ${n}`};}
+
+const QB={
+'1-2':{
+letters:[mk('1-2','letters',1,'listen','請找出大寫字母 A。',['A','H','M','T'],0,'A'),mk('1-2','letters',2,'listen','哪一個是字母 B？',['P','B','D','R'],1,'B'),mk('1-2','letters',3,'listen','請找出大寫字母 C。',['G','C','O','Q'],1,'C')],
+phonics:[mk('1-2','phonics',1,'listen','字母 B 最常見起始音是？',['/b/','/m/','/t/','/k/'],0,'b'),mk('1-2','phonics',2,'listen','字母 M 最常見起始音是？',['/m/','/s/','/n/','/f/'],0,'m'),mk('1-2','phonics',3,'listen','聽聲音 /a/，較接近哪個母音？',['A','E','I','O'],0,'a')],
+blend:[mk('1-2','blend',1,'listen','把 /c/ + /a/ 合起來較接近？',['ca','co','cu','ci'],0,'ca'),mk('1-2','blend',2,'listen','把 /m/ + /e/ 合起來較接近？',['ma','me','mo','mi'],1,'me'),mk('1-2','blend',3,'listen','把 /d/ + /o/ 合起來較接近？',['do','da','de','du'],0,'do')],
+picture:[mk('1-2','picture',1,'picture','圖片是一隻貓，應選哪個字？',['cat','sun','bed','cup'],0,'','貓咪圖片'),mk('1-2','picture',2,'picture','圖片是一個蘋果，應選哪個字？',['ball','apple','fish','milk'],1,'','蘋果圖片'),mk('1-2','picture',3,'picture','圖片是一個太陽，應選哪個字？',['sun','moon','star','rain'],0,'','太陽圖片')],
+dictation:[mk('1-2','dictation',1,'listen','聽到 "a"，應選哪個字母？',['A','E','I','O'],0,'a'),mk('1-2','dictation',2,'listen','聽到 "b"，應選哪個字母？',['D','P','B','R'],2,'b'),mk('1-2','dictation',3,'listen','聽到 "m"，應選哪個字母？',['M','N','W','H'],0,'m')]
+},
+'3-4':{
+letters:[mk('3-4','letters',1,'listen','哪一個是小寫字母 d？',['b','p','d','q'],2,'d'),mk('3-4','letters',2,'listen','找出與 G 相同的字母。',['C','G','J','Q'],1,'G'),mk('3-4','letters',3,'listen','請找出字母 M。',['N','W','M','H'],2,'M')],
+phonics:[mk('3-4','phonics',1,'listen','sun 的第一個聲音是？',['/s/','/n/','/u/','/t/'],0,'sun'),mk('3-4','phonics',2,'listen','fish 的第一個聲音是？',['/f/','/sh/','/i/','/h/'],0,'fish'),mk('3-4','phonics',3,'listen','dog 的第一個聲音是？',['/d/','/g/','/o/','/t/'],0,'dog')],
+blend:[mk('3-4','blend',1,'listen','把 /p/ + /i/ + /g/ 拼起來是？',['peg','pig','pigg','pag'],1,'pig'),mk('3-4','blend',2,'listen','把 /m/ + /a/ + /p/ 拼起來是？',['map','mop','mat','nap'],0,'map'),mk('3-4','blend',3,'listen','把 /c/ + /a/ + /t/ 拼起來是？',['cat','cut','cap','cot'],0,'cat')],
+picture:[mk('3-4','picture',1,'picture','看到太陽圖片時應選？',['moon','sun','star','sky'],1,'','sun'),mk('3-4','picture',2,'picture','看到魚圖片時應選？',['fish','ship','dish','frog'],0,'','fish'),mk('3-4','picture',3,'picture','看到球圖片時應選？',['ball','book','bird','bag'],0,'','ball')],
+dictation:[mk('3-4','dictation',1,'listen','聽到 "dog"，正確拼字是？',['doc','dog','dig','dag'],1,'dog'),mk('3-4','dictation',2,'listen','聽到 "red"，正確拼字是？',['rid','rad','red','rod'],2,'red'),mk('3-4','dictation',3,'listen','聽到 "sun"，正確拼字是？',['snu','sun','sud','san'],1,'sun')]
+},
+'4-5':{
+letters:[mk('4-5','letters',1,'listen','小寫 h 對應哪個大寫字母？',['H','N','K','B'],0,'h'),mk('4-5','letters',2,'listen','請選出小寫 p。',['b','d','p','q'],2,'p'),mk('4-5','letters',3,'listen','請選出大寫 G。',['C','G','Q','O'],1,'G')],
+phonics:[mk('4-5','phonics',1,'listen','cake 中 a 的發音較接近？',['/a/','/ei/','/i/','/o/'],1,'cake'),mk('4-5','phonics',2,'listen','ship 的尾音較接近？',['/p/','/b/','/t/','/k/'],0,'ship'),mk('4-5','phonics',3,'listen','phone 的開頭聲音較接近？',['/f/','/p/','/h/','/m/'],0,'phone')],
+blend:[mk('4-5','blend',1,'listen','bl- 開頭可組成哪個字？',['black','crab','step','frog'],0,'black'),mk('4-5','blend',2,'listen','st- 開頭可組成哪個字？',['plate','star','chair','green'],1,'star'),mk('4-5','blend',3,'listen','gr- 開頭可組成哪個字？',['clock','grass','shape','train'],1,'grass')],
+picture:[mk('4-5','picture',1,'picture','圖片是學校巴士，應選哪個字？',['bus','car','van','bike'],0,'','bus'),mk('4-5','picture',2,'picture','圖片是老師，應選哪個字？',['farmer','nurse','teacher','chef'],2,'','teacher'),mk('4-5','picture',3,'picture','圖片是圖書，應選哪個字？',['book','desk','bag','pen'],0,'','book')],
+dictation:[mk('4-5','dictation',1,'listen','聽到 "book"，應選？',['book','bood','buck','bok'],0,'book'),mk('4-5','dictation',2,'listen','聽到 "home"，應選？',['hone','home','hom','hume'],1,'home'),mk('4-5','dictation',3,'listen','聽到 "cake"，應選？',['caek','kake','cake','cack'],2,'cake')]
+},
+'5-6':{
+letters:[mk('5-6','letters',1,'listen','請選出小寫 q。',['b','d','p','q'],3,'q'),mk('5-6','letters',2,'listen','請選出小寫 d。',['b','d','p','q'],1,'d'),mk('5-6','letters',3,'listen','請選出小寫 m。',['m','n','w','u'],0,'m')],
+phonics:[mk('5-6','phonics',1,'listen','phone 的開頭聲音是？',['/f/','/p/','/h/','/ph/'],0,'phone'),mk('5-6','phonics',2,'listen','tree 的開頭 blend 是？',['tr','dr','tw','th'],0,'tree'),mk('5-6','phonics',3,'listen','ship 的開頭雙字母音是？',['sh','ch','th','ph'],0,'ship')],
+blend:[mk('5-6','blend',1,'listen','請選出含有 "cl" blend 的字。',['clock','smile','green','chair'],0,'clock'),mk('5-6','blend',2,'listen','請選出含有 "gr" blend 的字。',['grass','plate','black','shape'],0,'grass'),mk('5-6','blend',3,'listen','請選出含有 "st" blend 的字。',['start','cloud','bring','chop'],0,'start')],
+picture:[mk('5-6','picture',1,'picture','看圖選字。',['flower','tree','grass','leaf'],0,'','flower'),mk('5-6','picture',2,'picture','看圖選字。',['clock','lock','sock','block'],0,'','clock'),mk('5-6','picture',3,'picture','看圖選字。',['bird','fish','frog','duck'],0,'','bird')],
+dictation:[mk('5-6','dictation',1,'listen','聽到 "train"，應選哪個拼字？',['trane','train','trian','trine'],1,'train'),mk('5-6','dictation',2,'listen','聽到 "smart"，應選哪個拼字？',['smart','smert','smat','smark'],0,'smart'),mk('5-6','dictation',3,'listen','聽到 "light"，應選哪個拼字？',['lite','ligt','light','liht'],2,'light')]
+},
+'6+':{
+letters:[mk('6+','letters',1,'listen','請選出小寫 g。',['q','g','j','y'],1,'g'),mk('6+','letters',2,'listen','請選出小寫 u。',['u','v','w','n'],0,'u'),mk('6+','letters',3,'listen','請選出大寫 Y。',['V','Y','W','X'],1,'Y')],
+phonics:[mk('6+','phonics',1,'listen','light 中 "igh" 的發音較接近？',['/ei/','/ai/','/i/','/ou/'],1,'light'),mk('6+','phonics',2,'listen','chair 的開頭發音是？',['/ch/','/sh/','/k/','/t/'],0,'chair'),mk('6+','phonics',3,'listen','boat 的 "oa" 發音較接近？',['/o/','/u/','/ou/','/a/'],2,'boat')],
+blend:[mk('6+','blend',1,'listen','請選出含有三音拼讀的單字。',['spring','cat','go','toy'],0,'spring'),mk('6+','blend',2,'listen','哪個字最適合拆成 /s/ /t/ /a/ /r/？',['star','ship','tree','book'],0,'star'),mk('6+','blend',3,'listen','請選出含有 "str" 組合的單字。',['street','green','plate','chair'],0,'street')],
+picture:[mk('6+','picture',1,'picture','看圖選字。',['giraffe','lion','tiger','zebra'],0,'','giraffe'),mk('6+','picture',2,'picture','看圖選字。',['piano','guitar','drum','violin'],0,'','piano'),mk('6+','picture',3,'picture','看圖選字。',['mountain','river','ocean','forest'],0,'','mountain')],
+dictation:[mk('6+','dictation',1,'listen','聽到 "reading"，應選？',['reding','reading','raeding','readin'],1,'reading'),mk('6+','dictation',2,'listen','聽到 "bright"，應選？',['brite','brigt','bright','brighte'],2,'bright'),mk('6+','dictation',3,'listen','聽到 "friend"，應選？',['freind','frend','friend','frined'],2,'friend')]
+}
+};
+
+const _s=(b)=>{const f=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">${b}</svg>`;return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(f)}`;};
+const IMAGE_MAP={
+cat:_s(`<circle cx="100" cy="100" r="75" fill="#f5a623"/><polygon points="42,70 58,22 80,68" fill="#f5a623"/><polygon points="120,68 142,22 158,70" fill="#f5a623"/><polygon points="48,68 62,28 78,66" fill="#ffdba4"/><polygon points="122,66 138,28 152,68" fill="#ffdba4"/><ellipse cx="78" cy="100" rx="10" ry="12" fill="#1a1a1a"/><ellipse cx="122" cy="100" rx="10" ry="12" fill="#1a1a1a"/><circle cx="81" cy="96" r="3" fill="white"/><circle cx="125" cy="96" r="3" fill="white"/><ellipse cx="100" cy="118" rx="7" ry="5" fill="#ff9fb3"/><path d="M93,123 Q100,130 107,123" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/><line x1="45" y1="114" x2="88" y2="117" stroke="#555" stroke-width="1.5"/><line x1="45" y1="121" x2="88" y2="121" stroke="#555" stroke-width="1.5"/><line x1="112" y1="117" x2="155" y2="114" stroke="#555" stroke-width="1.5"/><line x1="112" y1="121" x2="155" y2="121" stroke="#555" stroke-width="1.5"/>`),
+apple:_s(`<ellipse cx="100" cy="112" rx="65" ry="62" fill="#e74c3c"/><ellipse cx="70" cy="85" rx="28" ry="18" fill="#c0392b" opacity="0.3"/><rect x="97" y="45" width="7" height="24" rx="3.5" fill="#795548"/><path d="M100,60 Q118,40 138,48 Q130,70 112,68 Q100,66 100,60Z" fill="#27ae60"/><ellipse cx="76" cy="106" rx="14" ry="22" fill="white" opacity="0.15"/>`),
+ball:_s(`<circle cx="100" cy="100" r="78" fill="#e74c3c"/><path d="M22,100 Q100,45 178,100" stroke="white" stroke-width="5" fill="none"/><path d="M22,100 Q100,155 178,100" stroke="white" stroke-width="5" fill="none"/><path d="M100,22 Q55,100 100,178" stroke="white" stroke-width="4" fill="none"/><path d="M100,22 Q145,100 100,178" stroke="white" stroke-width="4" fill="none"/><circle cx="100" cy="100" r="78" fill="none" stroke="#c0392b" stroke-width="2"/>`),
+sun:_s(`<circle cx="100" cy="100" r="55" fill="#f1c40f"/><circle cx="100" cy="100" r="44" fill="#f39c12"/><line x1="100" y1="18" x2="100" y2="38" stroke="#f1c40f" stroke-width="8" stroke-linecap="round"/><line x1="100" y1="162" x2="100" y2="182" stroke="#f1c40f" stroke-width="8" stroke-linecap="round"/><line x1="18" y1="100" x2="38" y2="100" stroke="#f1c40f" stroke-width="8" stroke-linecap="round"/><line x1="162" y1="100" x2="182" y2="100" stroke="#f1c40f" stroke-width="8" stroke-linecap="round"/><line x1="36" y1="36" x2="50" y2="50" stroke="#f1c40f" stroke-width="8" stroke-linecap="round"/><line x1="164" y1="36" x2="150" y2="50" stroke="#f1c40f" stroke-width="8" stroke-linecap="round"/><line x1="50" y1="150" x2="36" y2="164" stroke="#f1c40f" stroke-width="8" stroke-linecap="round"/><line x1="150" y1="150" x2="164" y2="164" stroke="#f1c40f" stroke-width="8" stroke-linecap="round"/><path d="M88,112 Q100,122 112,112" stroke="#e6a817" stroke-width="4" fill="none" stroke-linecap="round"/>`),
+dog:_s(`<ellipse cx="63" cy="108" rx="24" ry="44" fill="#c9956c" transform="rotate(-15,63,108)"/><ellipse cx="137" cy="108" rx="24" ry="44" fill="#c9956c" transform="rotate(15,137,108)"/><circle cx="100" cy="100" r="66" fill="#d4a574"/><ellipse cx="79" cy="93" rx="10" ry="11" fill="#1a1a1a"/><ellipse cx="121" cy="93" rx="10" ry="11" fill="#1a1a1a"/><circle cx="82" cy="89" r="3" fill="white"/><circle cx="124" cy="89" r="3" fill="white"/><ellipse cx="100" cy="118" rx="20" ry="14" fill="#bf8c5c"/><ellipse cx="100" cy="120" rx="10" ry="6" fill="#e07b7b"/><ellipse cx="87" cy="110" rx="6" ry="4" fill="#1a1a1a"/><ellipse cx="113" cy="110" rx="6" ry="4" fill="#1a1a1a"/><path d="M90,126 Q100,133 110,126" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/>`),
+fish:_s(`<polygon points="158,58 188,100 158,142" fill="#2471a3"/><ellipse cx="92" cy="100" rx="66" ry="42" fill="#3498db"/><ellipse cx="70" cy="91" rx="11" ry="13" fill="#1a5276"/><circle cx="66" cy="87" r="3.5" fill="white"/><circle cx="66" cy="96" r="2" fill="#1a5276"/><path d="M92,58 Q96,100 92,142" stroke="#2471a3" stroke-width="2.5" fill="none"/><path d="M110,72 Q134,100 110,128" stroke="#2471a3" stroke-width="2" fill="none"/>`),
+cup:_s(`<path d="M52,62 L68,162 L132,162 L148,62 Z" fill="#f39c12"/><ellipse cx="100" cy="62" rx="48" ry="13" fill="#f5b942"/><ellipse cx="100" cy="162" rx="38" ry="9" fill="#d68910"/><path d="M148,86 Q178,96 172,126 Q166,148 148,140" stroke="#d68910" stroke-width="12" stroke-linecap="round" fill="none"/><path d="M66,90 Q100,84 134,90" stroke="white" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.6"/><path d="M70,112 Q100,106 130,112" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.4"/>`),
+bus:_s(`<rect x="18" y="68" width="164" height="90" rx="14" fill="#f1c40f"/><rect x="30" y="80" width="35" height="32" rx="5" fill="#aed6f1"/><rect x="72" y="80" width="35" height="32" rx="5" fill="#aed6f1"/><rect x="114" y="80" width="35" height="32" rx="5" fill="#aed6f1"/><rect x="152" y="78" width="22" height="34" rx="3" fill="#f39c12"/><rect x="18" y="115" width="164" height="7" fill="#e6b800"/><circle cx="52" cy="162" r="18" fill="#2c3e50"/><circle cx="52" cy="162" r="10" fill="#7f8c8d"/><circle cx="148" cy="162" r="18" fill="#2c3e50"/><circle cx="148" cy="162" r="10" fill="#7f8c8d"/><rect x="18" y="148" width="6" height="10" rx="3" fill="#e74c3c"/><text x="100" y="148" text-anchor="middle" font-size="12" font-weight="bold" fill="#333" font-family="Arial,sans-serif">SCHOOL BUS</text>`),
+teacher:_s(`<circle cx="100" cy="52" r="30" fill="#fad7a0"/><path d="M62,175 Q62,120 100,114 Q138,120 138,175" fill="#3498db"/><rect x="78" y="110" width="44" height="50" rx="4" fill="#2980b9"/><line x1="62" y1="132" x2="78" y2="116" stroke="#fad7a0" stroke-width="14" stroke-linecap="round"/><line x1="138" y1="132" x2="122" y2="116" stroke="#fad7a0" stroke-width="14" stroke-linecap="round"/><line x1="82" y1="160" x2="82" y2="196" stroke="#1a252f" stroke-width="13" stroke-linecap="round"/><line x1="118" y1="160" x2="118" y2="196" stroke="#1a252f" stroke-width="13" stroke-linecap="round"/><ellipse cx="89" cy="48" rx="5" ry="6" fill="#2d2d2d"/><ellipse cx="111" cy="48" rx="5" ry="6" fill="#2d2d2d"/><path d="M90,62 Q100,68 110,62" stroke="#e74c3c" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="136" y="104" width="30" height="22" rx="2" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1.5"/><line x1="140" y1="111" x2="163" y2="111" stroke="#95a5a6" stroke-width="2"/><line x1="140" y1="117" x2="163" y2="117" stroke="#95a5a6" stroke-width="2"/><line x1="140" y1="122" x2="158" y2="122" stroke="#95a5a6" stroke-width="2"/>`),
+book:_s(`<path d="M100,38 Q56,40 35,54 L35,168 Q56,155 100,158 Z" fill="#3498db"/><path d="M100,38 Q144,40 165,54 L165,168 Q144,155 100,158 Z" fill="#2980b9"/><rect x="96" y="38" width="8" height="120" fill="#f39c12"/><path d="M52,72 Q76,69 96,72" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8"/><path d="M52,85 Q76,82 96,85" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.6"/><path d="M52,98 Q76,95 96,98" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.6"/><path d="M52,111 Q76,108 96,111" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.6"/><path d="M104,72 Q124,69 148,72" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8"/><path d="M104,85 Q124,82 148,85" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.6"/><path d="M104,98 Q124,95 148,98" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.6"/><path d="M104,111 Q124,108 148,111" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.6"/>`),
+flower:_s(`<rect x="94" y="118" width="12" height="66" rx="6" fill="#27ae60"/><path d="M106,152 Q130,138 136,115 Q120,112 106,135 Z" fill="#27ae60"/><ellipse cx="100" cy="68" rx="20" ry="32" fill="#ff9ff3"/><ellipse cx="100" cy="68" rx="20" ry="32" fill="#ff9ff3" transform="rotate(60,100,100)"/><ellipse cx="100" cy="68" rx="20" ry="32" fill="#ff9ff3" transform="rotate(120,100,100)"/><ellipse cx="100" cy="68" rx="20" ry="32" fill="#fd79a8" transform="rotate(30,100,100)"/><ellipse cx="100" cy="68" rx="20" ry="32" fill="#fd79a8" transform="rotate(90,100,100)"/><ellipse cx="100" cy="68" rx="20" ry="32" fill="#fd79a8" transform="rotate(150,100,100)"/><circle cx="100" cy="100" r="28" fill="#f1c40f"/><circle cx="100" cy="100" r="20" fill="#f39c12"/><circle cx="92" cy="96" r="3" fill="#d68910"/><circle cx="108" cy="96" r="3" fill="#d68910"/><circle cx="100" cy="107" r="3" fill="#d68910"/>`),
+clock:_s(`<circle cx="100" cy="100" r="82" fill="#2c3e50"/><circle cx="100" cy="100" r="74" fill="#ecf0f1"/><circle cx="100" cy="100" r="66" fill="white"/><text x="100" y="48" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c3e50" font-family="Arial,sans-serif">12</text><text x="158" y="106" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c3e50" font-family="Arial,sans-serif">3</text><text x="100" y="166" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c3e50" font-family="Arial,sans-serif">6</text><text x="42" y="106" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c3e50" font-family="Arial,sans-serif">9</text><line x1="100" y1="100" x2="100" y2="54" stroke="#2c3e50" stroke-width="5" stroke-linecap="round"/><line x1="100" y1="100" x2="138" y2="100" stroke="#e74c3c" stroke-width="4" stroke-linecap="round"/><circle cx="100" cy="100" r="6" fill="#2c3e50"/><rect x="92" y="12" width="16" height="14" rx="4" fill="#2c3e50"/>`),
+bird:_s(`<ellipse cx="92" cy="115" rx="56" ry="44" fill="#3498db"/><circle cx="148" cy="82" r="28" fill="#3498db"/><ellipse cx="158" cy="75" rx="8" ry="9" fill="#1a1a1a"/><circle cx="161" cy="72" r="2.5" fill="white"/><path d="M164,82 L182,76 L175,90 Z" fill="#f1c40f"/><path d="M82,90 Q52,56 28,68 Q32,98 82,98 Z" fill="#2980b9"/><path d="M82,98 Q52,78 28,90 Q32,114 82,112 Z" fill="#2471a3"/><path d="M85,135 Q62,162 52,178 L90,156 Z" fill="#2980b9"/><path d="M110,140 Q134,164 148,174 L112,152 Z" fill="#2980b9"/>`),
+giraffe:_s(`<rect x="84" y="28" width="22" height="88" rx="11" fill="#f1c40f"/><ellipse cx="95" cy="118" rx="44" ry="52" fill="#f1c40f"/><ellipse cx="95" cy="42" rx="24" ry="22" fill="#f1c40f"/><ellipse cx="82" cy="26" rx="6" ry="11" fill="#f1c40f"/><ellipse cx="108" cy="26" rx="6" ry="11" fill="#f1c40f"/><ellipse cx="82" cy="18" rx="5" ry="6" fill="#d4a017"/><ellipse cx="108" cy="18" rx="5" ry="6" fill="#d4a017"/><ellipse cx="86" cy="38" rx="5" ry="6" fill="#1a1a1a"/><ellipse cx="104" cy="38" rx="5" ry="6" fill="#1a1a1a"/><circle cx="87" cy="35" r="1.5" fill="white"/><circle cx="105" cy="35" r="1.5" fill="white"/><line x1="95" y1="52" x2="95" y2="56" stroke="#d4a017" stroke-width="3" stroke-linecap="round"/><rect x="76" y="170" width="14" height="28" rx="7" fill="#d4a017"/><rect x="98" y="170" width="14" height="28" rx="7" fill="#d4a017"/><rect x="60" y="162" width="12" height="28" rx="6" fill="#d4a017"/><rect x="113" y="162" width="12" height="28" rx="6" fill="#d4a017"/><circle cx="76" cy="105" r="9" fill="#d4a017" opacity="0.8"/><circle cx="113" cy="118" r="8" fill="#d4a017" opacity="0.8"/><circle cx="88" cy="130" r="10" fill="#d4a017" opacity="0.8"/><circle cx="105" cy="98" r="7" fill="#d4a017" opacity="0.8"/>`),
+piano:_s(`<rect x="18" y="58" width="164" height="116" rx="8" fill="#1a252f"/><rect x="28" y="70" width="144" height="82" rx="4" fill="white"/><rect x="28" y="70" width="144" height="6" fill="#bdc3c7"/><rect x="30" y="76" width="18" height="70" rx="3" fill="white" stroke="#d5d8dc" stroke-width="1"/><rect x="50" y="76" width="18" height="70" rx="3" fill="white" stroke="#d5d8dc" stroke-width="1"/><rect x="70" y="76" width="18" height="70" rx="3" fill="white" stroke="#d5d8dc" stroke-width="1"/><rect x="90" y="76" width="18" height="70" rx="3" fill="white" stroke="#d5d8dc" stroke-width="1"/><rect x="110" y="76" width="18" height="70" rx="3" fill="white" stroke="#d5d8dc" stroke-width="1"/><rect x="130" y="76" width="18" height="70" rx="3" fill="white" stroke="#d5d8dc" stroke-width="1"/><rect x="150" y="76" width="20" height="70" rx="3" fill="white" stroke="#d5d8dc" stroke-width="1"/><rect x="43" y="76" width="12" height="44" rx="3" fill="#1a252f"/><rect x="63" y="76" width="12" height="44" rx="3" fill="#1a252f"/><rect x="103" y="76" width="12" height="44" rx="3" fill="#1a252f"/><rect x="123" y="76" width="12" height="44" rx="3" fill="#1a252f"/><rect x="143" y="76" width="12" height="44" rx="3" fill="#1a252f"/><rect x="28" y="152" width="144" height="8" rx="2" fill="#0d1b2a"/>`),
+mountain:_s(`<rect x="0" y="140" width="200" height="70" fill="#a8d8ea"/><polygon points="38,162 120,28 195,162" fill="#85929e"/><polygon points="0,162 72,58 145,162" fill="#95a5a6"/><polygon points="72,58 120,28 160,72" fill="white"/><polygon points="38,72 72,58 90,86" fill="white" opacity="0.8"/><circle cx="158" cy="50" r="22" fill="white" opacity="0.7"/><circle cx="50" cy="82" r="14" fill="white" opacity="0.6"/>`)
+};
+const state={stage:'start',profile:{childName:'',ageGroup:'3-4',targetArea:'開學'},questionnaireAnswers:{},testMode:'full',singleCategory:'letters',quizQuestions:[],currentQuestionIndex:0,quizSelections:{},playingQuestionId:null,result:null,completionTime:'',parentName:'',parentPhone:'',followUpHint:'',isSubmitting:false};
+const app=document.getElementById('app');
+app.addEventListener('click',onClick);app.addEventListener('input',onInput);render();
+
+function onInput(e){const t=e.target;if(t.id==='childName')state.profile.childName=t.value;if(t.id==='parentName')state.parentName=t.value;if(t.id==='parentPhone')state.parentPhone=t.value;render();}
+async function onClick(e){const btn=e.target.closest('[data-act]');if(!btn)return;const a=btn.dataset.act;
+if(a==='goto'){state.stage=btn.dataset.to;render();}
+if(a==='set-age'){state.profile.ageGroup=btn.dataset.value;render();}
+if(a==='set-target'){state.profile.targetArea=btn.dataset.value;render();}
+if(a==='set-q'){state.questionnaireAnswers[btn.dataset.qid]=btn.dataset.value;render();}
+if(a==='set-mode'){state.testMode=btn.dataset.value;render();}
+if(a==='set-category'){state.singleCategory=btn.dataset.value;render();}
+if(a==='start-quiz'){state.quizQuestions=buildQuizQuestions();state.currentQuestionIndex=0;state.quizSelections={};state.result=null;state.completionTime='';state.saveHint='';state.stage='quiz';render();}
+if(a==='choose'){state.quizSelections[btn.dataset.qid]=Number(btn.dataset.idx);render();}
+if(a==='prev'){state.currentQuestionIndex=Math.max(0,state.currentQuestionIndex-1);render();}
+if(a==='next'){state.currentQuestionIndex=Math.min(state.quizQuestions.length-1,state.currentQuestionIndex+1);render();}
+if(a==='finish'){finishQuiz();}
+if(a==='audio'){const q=state.quizQuestions[state.currentQuestionIndex];if(window.speechSynthesis){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(q.audioLabel);u.lang='en-US';u.rate=0.85;state.playingQuestionId=q.id;render();u.onend=()=>{state.playingQuestionId=null;render();};u.onerror=()=>{state.playingQuestionId=null;render();};window.speechSynthesis.speak(u);}else{state.playingQuestionId=q.id;render();setTimeout(()=>{if(state.playingQuestionId===q.id){state.playingQuestionId=null;render();}},1500);}}
+if(a==='retake'){state.stage='mode';state.quizQuestions=[];state.currentQuestionIndex=0;state.quizSelections={};state.result=null;state.completionTime='';state.followUpHint='';state.isSubmitting=false;render();}
+if(a==='home'){resetAll();render();}
+if(a==='finalize-followup'){await handleFinalizeFollowUp();}
+}
+
+function resetAll(){state.stage='start';state.profile={childName:'',ageGroup:'3-4',targetArea:'開學'};state.questionnaireAnswers={};state.testMode='full';state.singleCategory='letters';state.quizQuestions=[];state.currentQuestionIndex=0;state.quizSelections={};state.playingQuestionId=null;state.result=null;state.completionTime='';state.parentName='';state.parentPhone='';state.followUpHint='';state.isSubmitting=false;}
+function canProfile(){return state.profile.childName.trim().length>0}
+function canQuestionnaire(){return QUESTIONNAIRE.every(q=>state.questionnaireAnswers[q.id])}
+
+function buildQuizQuestions(){if(state.testMode==='single')return [...QB[state.profile.ageGroup][state.singleCategory]];return CATEGORIES.flatMap(c=>QB[state.profile.ageGroup][c]);}
+function finishQuiz(){const attempts=state.quizQuestions.map(q=>({questionId:q.id,selectedIndex:state.quizSelections[q.id],isCorrect:state.quizSelections[q.id]===q.correctIndex}));state.result=calculateResult(state.quizQuestions,attempts);state.completionTime=new Date().toISOString();state.stage='result';render();}
+function calculateResult(questions,attempts){const map=new Map(attempts.map(a=>[a.questionId,a]));const scores=Object.fromEntries(CATEGORIES.map(c=>[c,{correct:0,total:0,percentage:0}]));const wrong=[];
+for(const q of questions){const a=map.get(q.id);if(!a)continue;scores[q.category].total++;if(a.isCorrect)scores[q.category].correct++;else wrong.push({question:q,selectedIndex:a.selectedIndex});}
+let totalCorrect=0,totalQuestions=0;for(const c of CATEGORIES){const r=scores[c];totalCorrect+=r.correct;totalQuestions+=r.total;r.percentage=r.total?Math.round(r.correct/r.total*100):0;}
+const totalPercentage=totalQuestions?Math.round(totalCorrect/totalQuestions*100):0;const level=totalPercentage<=49?'Level 1':totalPercentage<=69?'Level 2':totalPercentage<=84?'Level 3':'Level 4';
+const weakestCategory=CATEGORIES.reduce((w,c)=>{const ws=scores[w],cs=scores[c];if(!cs.total)return w;if(!ws.total)return c;return cs.percentage<ws.percentage?c:w;},CATEGORIES[0]);
+return{totalCorrect,totalQuestions,totalPercentage,level,categoryScores:scores,wrongQuestions:wrong,weakestCategory};
+}
+
+function buildRecommendations(){const r=state.result;const weak=state.result.weakestCategory;const weakRules={letters:['Cambridge 認字記憶班','親子英文故事班'],picture:['Cambridge 認字記憶班','親子英文故事班'],phonics:['家長英語拼音基礎課','Phonics拼讀之旅'],blend:['Phonics拼讀之旅','家長英語拼音基礎課'],dictation:['親子英語寫作班','家長英語拼音基礎課']};
+let main='',secondary='';if(state.profile.targetArea==='開學'){main=(state.profile.ageGroup==='1-2'||state.profile.ageGroup==='3-4')?'升K相關課程':'升小相關課程';}
+if(state.profile.targetArea==='學習記憶'){main='Cambridge 認字記憶班';secondary='兒童高效記憶家長課';}
+if(state.profile.targetArea==='專注力'){if(state.profile.ageGroup==='1-2'){main='1-3歲學前專注力基礎課';secondary='3-6歲專注力提升手冊';}else{main='3-6歲專注力基礎課程';secondary='3-6歲專注力提升手冊';}}
+if(!secondary)secondary=(weakRules[weak][0]!==main)?weakRules[weak][0]:weakRules[weak][1];
+const supplementary=[];if(r.totalPercentage>=85)supplementary.push('親子英文故事班','Phonics拼讀之旅');
+return{mainRecommendation:main,secondaryRecommendation:secondary,supplementaryRecommendations:supplementary,reasons:[`本次分流方向為「${state.profile.targetArea}」，主推薦「${main}」，可先對齊目前學習目標。`,`英文較弱環節為「${CATEGORY_LABELS[weak]}」，建議以「${secondary}」作補強，循序提升孩子信心。`]};
+}
+
+function buildParentAdvice(){const r=state.result;const byLevel={'Level 1':'建議先以短時間、高頻率方式建立英文接觸感，每次練習 10 分鐘左右最合適。','Level 2':'孩子基礎正在建立中，建議固定每週 3 至 4 次練習，持續累積穩定感。','Level 3':'孩子已具備同齡基礎，可在保持興趣下加入小挑戰，讓學習更有成就感。','Level 4':'孩子整體表現突出，可安排進階活動，同時保留遊戲化互動以維持學習熱情。'};
+const byTarget={開學:'配合開學節奏，建議把練習放在固定作息時段，幫助孩子更快進入學習狀態。',學習記憶:'可加入圖像記憶與口語複述，提升孩子記住單字與句型的效率。',專注力:'建議採用短回合互動任務，先穩定專注時間，再逐步延長學習耐力。'};
+return `${byLevel[r.level]} ${byTarget[state.profile.targetArea]} 目前較需加強「${CATEGORY_LABELS[r.weakestCategory]}」，可透過看圖配對、跟讀及簡單拼讀遊戲，讓孩子在輕鬆互動中穩步進步。`;}
+
+function buildAi(){const r=state.result;const name=state.profile.childName.trim()||'孩子';const top=CATEGORIES.reduce((b,c)=>r.categoryScores[c].percentage>r.categoryScores[b].percentage?c:b,'letters');const tone={'Level 1':'願意完成評估、認真聆聽和作答，已經是很好的起步，值得鼓勵。','Level 2':'已有初步基礎，持續規律練習之下，進步幅度會愈來愈明顯。','Level 3':'理解與反應能力不錯，整體表現符合同齡水平，方向正確。','Level 4':'整體表現高於同齡，已具備良好的英文學習底子，可以嘗試更多挑戰。'};const targetHints={開學:'配合開學準備，建議把英語練習放入固定作息時段，讓孩子對學習節奏感到熟悉。',學習記憶:'針對記憶目標，可多用圖像聯想與口語複述，讓孩子在有趣的情境中反覆接觸詞彙。',專注力:'針對專注力目標，建議採用短回合任務，先穩定投入感，再慢慢延長每次練習時間。'};
+return `${name}今次評估總分為 ${r.totalPercentage}%，整體評級為${r.level}。${tone[r.level]} 今次在「${CATEGORY_LABELS[top]}」的表現較為穩定，反映${name}已有可延伸的學習基礎，這個優勢可以在日後的學習中繼續發揮。下一步建議優先加強「${CATEGORY_LABELS[r.weakestCategory]}」，每天以 10 至 15 分鐘進行聽音、看圖與親子互動遊戲，循序漸進地幫助孩子建立信心。${targetHints[state.profile.targetArea]} 整體而言，${name}的表現值得肯定，只要持續以鼓勵代替壓力，讓學習融入日常生活，孩子的英文自信自然會慢慢建立起來。`;}
+
+function buildSavePayload(){if(!state.result||!state.completionTime)return null;const rec=buildRecommendations();const parentAdvice=buildParentAdvice();const ai=buildAi();
+const categoryScores=Object.fromEntries(CATEGORIES.map(c=>[c,state.result.categoryScores[c].percentage]));
+return{childName:state.profile.childName,ageGroup:state.profile.ageGroup,targetArea:state.profile.targetArea,questionnaireAnswers:state.questionnaireAnswers,categoryScores,totalScorePercentage:state.result.totalPercentage,level:state.result.level,parentAdvice,aiAnalysisText:ai,recommendedCourses:{main:rec.mainRecommendation,secondary:rec.secondaryRecommendation,supplementary:rec.supplementaryRecommendations},recommendationReasons:rec.reasons,parentInfo:{parentName:state.parentName,parentPhone:state.parentPhone},completedAt:state.completionTime};}
+
+async function handleFinalizeFollowUp(){
+  const payload=buildSavePayload();
+  if(!payload)return;
+  state.isSubmitting=true;
+  state.followUpHint='資料傳送中，請稍候...';
+  render();
+  try{
+    const response=await fetch(API_URL,{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':`Bearer ${API_KEY}`,
+      },
+      body:JSON.stringify(payload),
+    });
+    if(!response.ok)throw new Error(`API request failed with status ${response.status}`);
+    state.followUpHint='✅ 評估結果與跟進資料已成功送出！';
+  }catch(error){
+    console.error('Failed to submit follow-up payload:',error);
+    state.followUpHint='❌ 資料送出失敗，請檢查網路連線或稍後再試。';
+  }finally{
+    state.isSubmitting=false;
+    render();
+  }
+}
+
+function render(){app.innerHTML=`<header class="top"><div><h1>幼兒英語評估工具</h1><p>Xaris Academy / 恩道教育</p></div><div class="tag">iPad 橫向流程版</div></header>${screen()}`;}
+
+function screen(){
+if(state.stage==='start')return `<section class="panel hero"><div class="mascot">📚</div><h2>幼兒英文能力評估</h2><p class="muted">完成分流問卷與測驗後，即場查看結果、建議與課程方向。</p><button class="primary" data-act="goto" data-to="questionnaire_profile">開始問卷</button></section>`;
+if(state.stage==='questionnaire_profile')return `<section class="panel"><h2>分流問卷（1/2）</h2><div class="field"><label>小朋友名字</label><input id="childName" value="${esc(state.profile.childName)}" placeholder="請輸入小朋友名字"></div><div class="field"><label>1. 小朋友年齡</label><div class="grid chips">${AGE_GROUPS.map(a=>`<button data-act="set-age" data-value="${a}" class="${state.profile.ageGroup===a?'active':''}">${a}</button>`).join('')}</div></div><div class="field"><label>2. 你而家最想針對小朋友加強邊一方面？</label><div class="grid chips">${TARGET_AREAS.map(t=>`<button data-act="set-target" data-value="${t}" class="${state.profile.targetArea===t?'active':''}">${t}</button>`).join('')}</div></div><div class="row"><button class="ghost" data-act="home">回首頁</button><button class="primary" data-act="goto" data-to="questionnaire_detail" ${canProfile()?'':'disabled'}>下一步：英文背景問卷</button></div></section>`;
+if(state.stage==='questionnaire_detail')return `<section class="panel"><h2>英文背景問卷（2/2）</h2>${QUESTIONNAIRE.map((q,i)=>`<div class="block"><h3>${i+1}. ${q.text}</h3><div class="grid opts">${q.options.map(o=>`<button data-act="set-q" data-qid="${q.id}" data-value="${o}" class="${state.questionnaireAnswers[q.id]===o?'active':''}">${o}</button>`).join('')}</div></div>`).join('')}<div class="row"><button class="ghost" data-act="goto" data-to="questionnaire_profile">上一步</button><button class="primary" data-act="goto" data-to="mode" ${canQuestionnaire()?'':'disabled'}>下一步：選擇測驗模式</button></div></section>`;
+if(state.stage==='mode')return `<section class="panel"><h2>測驗模式</h2><div class="grid opts" style="grid-template-columns:repeat(2,minmax(220px,1fr))"><button data-act="set-mode" data-value="single" class="${state.testMode==='single'?'active':''}">單類測驗（single）</button><button data-act="set-mode" data-value="full" class="${state.testMode==='full'?'active':''}">綜合測驗（full）</button></div>${state.testMode==='single'?`<div class="field"><label>請選擇單類測驗類別</label><div class="grid cats">${CATEGORIES.map(c=>`<button data-act="set-category" data-value="${c}" class="cat-card ${state.singleCategory===c?'active':''}"><span class="icon">${CATEGORY_UI[c].icon}</span><strong>${CATEGORY_UI[c].title}</strong><small>${CATEGORY_UI[c].desc}</small></button>`).join('')}</div></div>`:''}<div class="block muted">題庫來源：${state.profile.ageGroup} 年齡層。${state.testMode==='full'?'將覆蓋多個類別能力。':'只測所選單一類別。'}</div><div class="row"><button class="ghost" data-act="goto" data-to="questionnaire_detail">上一步</button><button class="primary" data-act="start-quiz">開始作答</button></div></section>`;
+if(state.stage==='quiz'){const q=state.quizQuestions[state.currentQuestionIndex];const sel=state.quizSelections[q.id];return `<section class="panel"><h2>評估作答中</h2><p class="muted">第 ${state.currentQuestionIndex+1} / ${state.quizQuestions.length} 題 - 類別：${CATEGORY_LABELS[q.category]}</p><div class="block quiz"><div><h3>${q.questionText}</h3><span class="qtag">${q.questionType==='listen'?'聽音題':'看圖題'}</span>${q.questionType==='listen'?`<div class="placeholder"><p class="muted">音訊標記：${q.audioLabel}</p><button class="audio" data-act="audio">${state.playingQuestionId===q.id?'播放中...':'播放音訊'}</button></div>`:`<div class="placeholder">${IMAGE_MAP[q.imageLabel]?`<img src="${IMAGE_MAP[q.imageLabel]}" style="width:100%;max-height:220px;object-fit:contain;border-radius:10px" alt="${q.imageLabel}">`:`<div class="imgph">${q.imageLabel}</div>`}</div>`}</div><div class="grid opts single">${q.options.map((o,i)=>`<button data-act="choose" data-qid="${q.id}" data-idx="${i}" class="${sel===i?'active':''}">${o}</button>`).join('')}</div></div><div class="row"><button class="ghost" data-act="prev" ${state.currentQuestionIndex===0?'disabled':''}>上一題</button>${state.currentQuestionIndex<state.quizQuestions.length-1?`<button class="primary" data-act="next" ${typeof sel==='number'?'':'disabled'}>下一題</button>`:`<button class="primary" data-act="finish" ${typeof sel==='number'?'':'disabled'}>完成評估</button>`}</div></section>`;}
+if(state.stage==='result'){const r=state.result,rec=buildRecommendations(),advice=buildParentAdvice(),ai=buildAi();const tested=CATEGORIES.filter(c=>r.categoryScores[c].total>0);return `<section class="panel"><h2>評估結果</h2><div class="block"><h3>1. 總分 %</h3><p class="big">${r.totalPercentage}%</p></div><div class="block"><h3>2. 四級評級</h3><p>${LEVEL_LABELS[r.level]}</p></div><div class="block"><h3>3. 各類別分數</h3><div class="scoregrid">${tested.map(c=>`<div class="scoreitem"><strong>${CATEGORY_LABELS[c]}</strong><span>${r.categoryScores[c].percentage}% (${r.categoryScores[c].correct}/${r.categoryScores[c].total})</span></div>`).join('')}</div>${state.testMode==='single'?`<p class="muted">此結果為單類測驗分數。</p>`:''}</div><div class="block"><h3>4. 錯題區</h3>${r.wrongQuestions.length?r.wrongQuestions.map((w,i)=>`<div class="wrong">${i+1}. [${CATEGORY_LABELS[w.question.category]}] ${w.question.questionText}<br>你的答案：${w.question.options[w.selectedIndex]}<br>正確答案：${w.question.options[w.question.correctIndex]}</div>`).join(''):'<p>沒有錯題，表現很棒。</p>'}</div><div class="block"><h3>5. 家長建議</h3><p>${advice}</p></div><div class="block"><h3>6. AI 分析</h3><p>${ai}</p></div><div class="block"><h3>7. 推薦課程</h3><p>主推薦：${rec.mainRecommendation}</p><p>次推薦：${rec.secondaryRecommendation}</p>${rec.supplementaryRecommendations.length?`<p>高表現補充：${rec.supplementaryRecommendations.join('、')}</p>`:''}</div><div class="block"><h3>8. 推薦課程原因</h3><p>${rec.reasons[0]}</p><p>${rec.reasons[1]}</p></div><div class="block row"><div><h3>9. 再測一次</h3><button class="primary" data-act="retake">再測一次</button></div><div><h3>10. 回首頁</h3><button class="ghost" data-act="home">回首頁</button></div></div><div class="block parent"><h3>現場跟進資料（可跳過）</h3><p class="muted">如需後續跟進建議，可留下聯絡資料。</p><div class="grid two"><div class="field"><label>家長姓名</label><input id="parentName" value="${esc(state.parentName)}" placeholder="可留空"></div><div class="field"><label>家長電話</label><input id="parentPhone" value="${esc(state.parentPhone)}" placeholder="可留空"></div></div><div class="row" style="margin-top:10px"><button class="ghost" data-act="finalize-followup" ${state.isSubmitting?'disabled':''}>${state.isSubmitting?'傳送中...':'完成跟進資料整理'}</button></div>${state.followUpHint?`<p class="muted">${state.followUpHint}</p>`:''}</div></section>`;}
+return '';
+}
+
+function esc(v){return String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
+</script>
+</body>
+</html>
