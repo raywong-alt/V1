@@ -188,6 +188,7 @@ const App = () => {
       ageGroup: profile.ageGroup,
       mode: testMode,
       singleCategory: testMode === 'single' ? singleCategory : undefined,
+      seed: `${profile.childName}-${Date.now()}`,
     });
 
     setQuizQuestions(questions);
