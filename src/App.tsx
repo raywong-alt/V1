@@ -1,7 +1,7 @@
 ﻿import { useEffect, useMemo, useRef, useState } from 'react';
 import { QUESTIONNAIRE, CATEGORY_LABELS } from './data/static';
 import { buildQuizQuestions } from './data/questionBank';
-import { generateAiSummaryPlaceholder } from './logic/aiSummary';
+import { generateAnalysisSummary } from './logic/analysisSummary';
 import { buildParentAdvice } from './logic/parentAdvice';
 import { buildSavePayload } from './logic/payload';
 import { buildRecommendations } from './logic/recommendation';
@@ -74,7 +74,7 @@ const App = () => {
 
   const aiSummary = useMemo(() => {
     if (!result) return '';
-    return generateAiSummaryPlaceholder({
+    return generateAnalysisSummary({
       result,
       targetArea: profile.targetArea,
       childName: profile.childName,
@@ -110,7 +110,7 @@ const App = () => {
       questionnaireAnswers,
       result,
       parentAdvice,
-      aiAnalysisText: aiSummary,
+      analysisText: aiSummary,
       recommendation,
       parentInfo: {
         parentName,

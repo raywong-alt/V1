@@ -96,7 +96,7 @@ export interface SavePayload {
   totalScorePercentage: number;
   level: LevelCode;
   parentAdvice: string;
-  aiAnalysisText: string;
+  analysisText: string;
   recommendedCourses: {
     main: string;
     secondary: string;

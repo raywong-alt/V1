@@ -19,7 +19,7 @@ const topCategory = (scores: AssessmentResult['categoryScores']): Category =>
     scores[current].percentage > scores[best].percentage ? current : best,
   );
 
-export const generateAiSummaryPlaceholder = (params: {
+export const generateAnalysisSummary = (params: {
   result: AssessmentResult;
   targetArea: TargetArea;
   childName: string;
