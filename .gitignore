@@ -20,3 +20,9 @@ Thumbs.db
 
 # 編輯器
 .vscode/*.log
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Claude Code 工作區設定（本地開發工具，不納入版本控制）
+.claude/

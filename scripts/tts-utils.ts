@@ -146,8 +146,9 @@ export function callAzureTTS(ssml: string, creds: AzureCredentials): Promise<Buf
 // ── 檔案工具 ──────────────────────────────────────────────────────
 
 export function toSafeFilename(id: string): string {
-  // question id 格式為 "3-4-letters-1" — 本身安全，但仍做保護性處理
-  return id.replace(/[^a-zA-Z0-9\-_]/g, '_');
+  // question id 格式為 "3-4-letters-1" 或 "6+-letters-1"
+  // 保留 + 字元（在檔名中合法），確保與 questionBank 的 id 一致
+  return id.replace(/[^a-zA-Z0-9\-_+]/g, '_');
 }
 
 export function getAudioOutputPath(ageGroup: string, category: string, questionId: string): string {

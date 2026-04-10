@@ -203,7 +203,7 @@ const App = () => {
 
   const finishQuiz = () => {
     const attempts: QuizAttempt[] = quizQuestions.map((question) => {
-      const selectedIndex = quizSelections[question.id]!;
+      const selectedIndex = quizSelections[question.id] ?? -1;
       return {
         questionId: question.id,
         selectedIndex,
@@ -641,7 +641,7 @@ const App = () => {
             </div>
 
             <div className="result-block">
-              <h3>6. AI 分析</h3>
+              <h3>6. 評估分析</h3>
               <p>{aiSummary}</p>
             </div>
 
