@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/types.ts","./src/vite-env.d.ts","./src/assets/audio/audioAssets.ts","./src/assets/images/imageAssets.ts","./src/data/questionBank.ts","./src/data/static.ts","./src/logic/aiSummary.ts","./src/logic/parentAdvice.ts","./src/logic/payload.ts","./src/logic/recommendation.ts","./src/logic/scoring.ts"],"version":"5.9.3"}
