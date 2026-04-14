@@ -764,19 +764,69 @@ export const QUESTION_BANK: Record<AgeGroup, Record<Category, AssessmentQuestion
   },
 };
 
+// ---------- Seeded random (Mulberry32) ----------
+const createSeededRandom = (seed: number) => {
+  let state = seed >>> 0;
+  return () => {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+
+const stringToSeed = (str: string): number => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+};
+
+const seededShuffle = <T,>(array: T[], rng: () => number): T[] => {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+};
+
+const shuffleQuestionOptions = (
+  question: AssessmentQuestion,
+  rng: () => number,
+): AssessmentQuestion => {
+  const correctAnswer = question.options[question.correctIndex];
+  const shuffledOptions = seededShuffle(question.options, rng);
+  const newCorrectIndex = shuffledOptions.indexOf(correctAnswer);
+  return { ...question, options: shuffledOptions, correctIndex: newCorrectIndex };
+};
+
 export const buildQuizQuestions = (params: {
   ageGroup: AgeGroup;
   mode: 'single' | 'full';
   singleCategory?: Category;
+  seed?: string;
 }): AssessmentQuestion[] => {
   const source = QUESTION_BANK[params.ageGroup];
+  const seedString = params.seed ?? String(Date.now() + Math.random());
+  const rng = createSeededRandom(stringToSeed(seedString));
+
+  let questions: AssessmentQuestion[];
 
   if (params.mode === 'single') {
     if (!params.singleCategory) {
       throw new Error('single mode 需要提供 category');
     }
-    return [...source[params.singleCategory]];
+    questions = seededShuffle([...source[params.singleCategory]], rng);
+  } else {
+    const shuffledCategories = seededShuffle([...CATEGORIES], rng);
+    questions = shuffledCategories.flatMap((category) =>
+      seededShuffle([...source[category]], rng),
+    );
   }
 
-  return CATEGORIES.flatMap((category) => source[category]);
+  return questions.map((q) => shuffleQuestionOptions(q, rng));
 };

@@ -1,7 +1,7 @@
 ﻿import { useEffect, useMemo, useRef, useState } from 'react';
 import { QUESTIONNAIRE, CATEGORY_LABELS } from './data/static';
 import { buildQuizQuestions } from './data/questionBank';
-import { generateAiSummaryPlaceholder } from './logic/aiSummary';
+import { generateAnalysisSummary } from './logic/analysisSummary';
 import { buildParentAdvice } from './logic/parentAdvice';
 import { buildSavePayload } from './logic/payload';
 import { buildRecommendations } from './logic/recommendation';
@@ -74,7 +74,7 @@ const App = () => {
 
   const aiSummary = useMemo(() => {
     if (!result) return '';
-    return generateAiSummaryPlaceholder({
+    return generateAnalysisSummary({
       result,
       targetArea: profile.targetArea,
       childName: profile.childName,
@@ -110,7 +110,7 @@ const App = () => {
       questionnaireAnswers,
       result,
       parentAdvice,
-      aiAnalysisText: aiSummary,
+      analysisText: aiSummary,
       recommendation,
       parentInfo: {
         parentName,
@@ -188,6 +188,7 @@ const App = () => {
       ageGroup: profile.ageGroup,
       mode: testMode,
       singleCategory: testMode === 'single' ? singleCategory : undefined,
+      seed: `${profile.childName}-${Date.now()}`,
     });
 
     setQuizQuestions(questions);
@@ -202,7 +203,7 @@ const App = () => {
 
   const finishQuiz = () => {
     const attempts: QuizAttempt[] = quizQuestions.map((question) => {
-      const selectedIndex = quizSelections[question.id]!;
+      const selectedIndex = quizSelections[question.id] ?? -1;
       return {
         questionId: question.id,
         selectedIndex,
@@ -640,7 +641,7 @@ const App = () => {
             </div>
 
             <div className="result-block">
-              <h3>6. AI 分析</h3>
+              <h3>6. 評估分析</h3>
               <p>{aiSummary}</p>
             </div>
 

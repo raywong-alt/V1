@@ -16,7 +16,7 @@ export const buildSavePayload = (params: {
   questionnaireAnswers: QuestionnaireAnswers;
   result: AssessmentResult;
   parentAdvice: string;
-  aiAnalysisText: string;
+  analysisText: string;
   recommendation: RecommendationResult;
   parentInfo: ParentInfo;
   completedAt: string;
@@ -38,7 +38,7 @@ export const buildSavePayload = (params: {
     totalScorePercentage: params.result.totalPercentage,
     level: params.result.level,
     parentAdvice: params.parentAdvice,
-    aiAnalysisText: params.aiAnalysisText,
+    analysisText: params.analysisText,
     recommendedCourses: {
       main: params.recommendation.mainRecommendation,
       secondary: params.recommendation.secondaryRecommendation,
